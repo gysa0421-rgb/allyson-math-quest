@@ -3,19 +3,28 @@ const STORAGE_KEY = "allyson-math-quest";
 const DEFAULT_PROGRESS = {
   stars: 0,
   bestStreak: 0,
-  unlockedTables: [2, 5, 10],
+  unlockedTables: [1, 2, 5, 10],
   masteredTables: [],
+  tableStats: {},
+  roundsPlayed: 0,
+  soundEnabled: true,
+  voiceMode: "normal",
 };
 
-const UNLOCK_ORDER = [2, 5, 10, 3, 4, 6, 7, 8, 9, 11, 12];
+const UNLOCK_ORDER = [1, 2, 5, 10, 3, 4, 6, 7, 8, 9, 11, 12];
 
 function loadProgress() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return { ...DEFAULT_PROGRESS };
-    return { ...DEFAULT_PROGRESS, ...JSON.parse(saved) };
+    if (!saved) return structuredClone(DEFAULT_PROGRESS);
+    const data = { ...structuredClone(DEFAULT_PROGRESS), ...JSON.parse(saved) };
+    if (!data.unlockedTables.includes(1)) {
+      data.unlockedTables = [1, ...data.unlockedTables];
+    }
+    data.tableStats = data.tableStats || {};
+    return data;
   } catch {
-    return { ...DEFAULT_PROGRESS };
+    return structuredClone(DEFAULT_PROGRESS);
   }
 }
 
@@ -34,6 +43,26 @@ function updateBestStreak(progress, streak) {
     progress.bestStreak = streak;
     saveProgress(progress);
   }
+}
+
+function recordAnswer(progress, table, wasCorrect) {
+  const key = String(table);
+  if (!progress.tableStats[key]) {
+    progress.tableStats[key] = { correct: 0, total: 0, rounds: 0 };
+  }
+  progress.tableStats[key].total += 1;
+  if (wasCorrect) progress.tableStats[key].correct += 1;
+  saveProgress(progress);
+}
+
+function recordRound(progress, table) {
+  const key = String(table);
+  if (!progress.tableStats[key]) {
+    progress.tableStats[key] = { correct: 0, total: 0, rounds: 0 };
+  }
+  progress.tableStats[key].rounds += 1;
+  progress.roundsPlayed += 1;
+  saveProgress(progress);
 }
 
 function maybeUnlockNextTable(progress, table, correct, total) {

@@ -49,9 +49,9 @@ function buildTableQuestions(table) {
   return shuffle(questions).slice(0, QUESTIONS_PER_ROUND);
 }
 
-function buildQuizQuestions(unlockedTables) {
+function buildQuizQuestions(unlockedTables, count = QUESTIONS_PER_ROUND) {
   const questions = [];
-  while (questions.length < QUESTIONS_PER_ROUND) {
+  while (questions.length < count) {
     const table = pickRandom(unlockedTables);
     const b = randomInt(1, 12);
     questions.push(buildQuestion(table, b));
@@ -84,15 +84,39 @@ function renderDots(a, b) {
   }
 }
 
-function launchConfetti() {
+function launchConfetti(big = false) {
   const container = document.getElementById("confetti");
   const colors = ["#ff6b9d", "#8b5cf6", "#fbbf24", "#38bdf8", "#34d399"];
-  for (let i = 0; i < 24; i++) {
+  const count = big ? 40 : 24;
+  for (let i = 0; i < count; i++) {
     const piece = document.createElement("span");
     piece.style.left = `${randomInt(0, 100)}%`;
     piece.style.background = pickRandom(colors);
     piece.style.animationDelay = `${randomInt(0, 400)}ms`;
+    if (big) piece.style.width = "14px";
     container.appendChild(piece);
     setTimeout(() => piece.remove(), 1800);
   }
+}
+
+function launchStarBurst() {
+  const container = document.getElementById("star-burst");
+  container.innerHTML = "";
+  const emojis = ["⭐", "✨", "🌟"];
+  for (let i = 0; i < 6; i++) {
+    const star = document.createElement("span");
+    star.textContent = pickRandom(emojis);
+    star.style.left = `${20 + randomInt(0, 60)}%`;
+    star.style.top = `${30 + randomInt(0, 20)}%`;
+    star.style.animationDelay = `${i * 80}ms`;
+    container.appendChild(star);
+    setTimeout(() => star.remove(), 900);
+  }
+}
+
+function popQuestionCard() {
+  const card = document.getElementById("question-card");
+  card.classList.remove("pop");
+  void card.offsetWidth;
+  card.classList.add("pop");
 }

@@ -2,8 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Allyson Math" />
+  <meta name="theme-color" content="#8b5cf6" />
   <title>Allyson's Math Quest</title>
+  <link rel="apple-touch-icon" href="images/allyson.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -11,11 +15,13 @@
 </head>
 <body>
   <div class="stars-bg" aria-hidden="true"></div>
+  <div class="photo-bg" aria-hidden="true"></div>
 
   <main class="app">
     <!-- HOME -->
     <section id="screen-home" class="screen active">
       <header class="hero">
+        <img src="images/allyson.png" alt="Allyson" class="hero-avatar" />
         <p class="eyebrow">Welcome back,</p>
         <h1>Allyson! ⭐</h1>
         <p class="subtitle">Let's master the times tables together!</p>
@@ -55,6 +61,30 @@
           </span>
         </button>
       </div>
+
+      <h3 class="games-section-title">🎮 Fun Games</h3>
+      <div class="menu games-menu">
+        <button class="menu-btn bubble" id="start-bubble-btn" type="button">
+          <span class="menu-icon">🫧</span>
+          <span class="menu-text">
+            <strong>Bubble Pop</strong>
+            <small>Pop the bubble with the right answer!</small>
+          </span>
+        </button>
+        <button class="menu-btn rocket-game" id="start-rocket-btn" type="button">
+          <span class="menu-icon">🌙</span>
+          <span class="menu-text">
+            <strong>Rocket to the Moon</strong>
+            <small>Fuel your rocket with math!</small>
+          </span>
+        </button>
+      </div>
+
+      <div class="home-footer">
+        <button id="sound-toggle" class="sound-toggle" type="button">🔊 Sound & Voice On</button>
+        <button id="voice-mode-toggle" class="voice-mode-toggle" type="button">👨‍👩‍👧 Family Voice</button>
+        <button class="parents-link" data-go="parents" type="button">For Parents</button>
+      </div>
     </section>
 
     <!-- TABLE PICKER -->
@@ -63,7 +93,7 @@
         <button class="back-btn" data-go="home">← Back</button>
         <h2>Pick a Table</h2>
       </header>
-      <p class="hint">Start with 2s, 5s, and 10s. Master a table to unlock more!</p>
+      <p class="hint">Start with 1s, 2s, 5s, and 10s. Master a table to unlock more!</p>
       <div id="table-grid" class="table-grid"></div>
     </section>
 
@@ -81,7 +111,9 @@
 
       <div class="streak-badge" id="streak-badge">🔥 Streak: 0</div>
 
-      <div class="question-card">
+      <div id="star-burst" class="star-burst" aria-hidden="true"></div>
+
+      <div class="question-card" id="question-card">
         <p class="question-label">What is</p>
         <p id="question-text" class="question-text">3 × 4 = ?</p>
         <div id="dot-grid" class="dot-grid" aria-hidden="true"></div>
@@ -96,6 +128,7 @@
     <!-- RESULTS -->
     <section id="screen-results" class="screen">
       <div class="results-card">
+        <img src="images/allyson.png" alt="Allyson" class="results-avatar" />
         <p class="results-emoji" id="results-emoji">🎉</p>
         <h2 id="results-title">Amazing, Allyson!</h2>
         <p id="results-message">You earned 8 stars!</p>
@@ -118,12 +151,84 @@
       <div id="chart-wrap" class="chart-wrap"></div>
       <p id="chart-detail" class="chart-detail">Tap a square to begin ✨</p>
     </section>
+
+    <!-- PARENTS -->
+    <section id="screen-parents" class="screen">
+      <header class="screen-header">
+        <button class="back-btn" data-go="home">← Back</button>
+        <h2>Parent Dashboard</h2>
+      </header>
+      <p class="hint">Allyson's learning progress</p>
+
+      <div class="family-photo-wrap">
+        <img src="images/family.png" alt="Allyson's family" class="family-photo" />
+        <p class="family-caption">Cheering for Allyson! 💕</p>
+      </div>
+
+      <div class="parent-summary">
+        <div class="stat">
+          <span class="stat-label">Total Stars</span>
+          <span id="parent-stars" class="stat-value">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Rounds Played</span>
+          <span id="parent-rounds" class="stat-value">0</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Tables Mastered</span>
+          <span id="parent-mastered" class="stat-value">0</span>
+        </div>
+      </div>
+
+      <h3 class="parent-section-title">Table Progress</h3>
+      <div id="parent-table-list" class="parent-table-list"></div>
+    </section>
+
+    <!-- BUBBLE POP -->
+    <section id="screen-bubble" class="screen">
+      <header class="screen-header">
+        <button class="back-btn" data-go="home" id="bubble-back">← Back</button>
+        <h2>Bubble Pop</h2>
+      </header>
+      <div class="lives-bar" id="bubble-lives">❤️ ❤️ ❤️</div>
+      <p class="bubble-prompt">Pop the bubble with the answer!</p>
+      <p id="bubble-question" class="bubble-question">3 × 4 = ?</p>
+      <div id="bubble-arena" class="bubble-arena"></div>
+      <p id="bubble-feedback" class="feedback"></p>
+      <p id="bubble-score" class="bubble-score">Score: 0 / 8</p>
+    </section>
+
+    <!-- ROCKET GAME -->
+    <section id="screen-rocket" class="screen">
+      <header class="screen-header">
+        <button class="back-btn" data-go="home" id="rocket-back">← Back</button>
+        <h2>Rocket to the Moon</h2>
+      </header>
+      <div class="rocket-scene">
+        <div class="rocket-track">
+          <div id="rocket-moon" class="rocket-moon">🌙</div>
+          <div id="rocket-ship" class="rocket-ship">🚀</div>
+        </div>
+        <div class="rocket-fuel-wrap">
+          <span>Fuel</span>
+          <div class="rocket-fuel-bar"><div id="rocket-fuel-fill" class="rocket-fuel-fill"></div></div>
+        </div>
+      </div>
+      <p id="rocket-question" class="question-text rocket-q">5 × 2 = ?</p>
+      <div id="rocket-choices" class="choices"></div>
+      <p id="rocket-feedback" class="feedback"></p>
+      <p id="rocket-progress" class="progress-text">Stop 1 of 8</p>
+    </section>
   </main>
 
   <div id="confetti" class="confetti" aria-hidden="true"></div>
 
   <script src="js/storage.js"></script>
+  <script src="js/sounds.js"></script>
+  <script src="js/custom-manifest.js"></script>
+  <script src="js/voice.js"></script>
   <script src="js/game.js"></script>
+  <script src="js/minigames.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
